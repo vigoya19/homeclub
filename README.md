@@ -173,7 +173,7 @@ git clone https://github.com/vigoya19/homeclub.git
 npm install
 
 # Configurar variables de entorno
-cp .env.example .env
+cp .env
 
 # Iniciar el servidor
 npm run start:dev                                             
@@ -182,9 +182,23 @@ npm run start:dev
 ### Variables de Entorno
 
 ```env
-PORT=3000
-DATABASE_URL=your_database_url
+DB1
+DB1_HOST=
+DB1_PORT=
+DB1_USER=
+DB1_PASS=
+DB1_NAME=
+
+DB2
+DB2_HOST=
+DB2_PORT=
+DB2_USER=
+DB2_PASS=
+DB2_NAME=
+
 NODE_ENV=development
+PORT=3000
+
 ```
 
 
@@ -213,7 +227,7 @@ NODE_ENV=development
   }
 }
 
-
+```
 
 # Tariff API
 

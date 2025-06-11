@@ -8,7 +8,7 @@ export const db2Config = (): TypeOrmModuleOptions => ({
   port: Number(process.env.DB2_PORT),
   username: process.env.DB2_USER,
   password: process.env.DB2_PASS,
-  database: 'sql10783730',
+  database: process.env.DB2_NAME,
   entities: [ApartmentMetadataOrmEntity],
   synchronize: true,
 });
