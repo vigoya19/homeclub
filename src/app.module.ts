@@ -6,11 +6,15 @@ import { db2Config } from './application/config/ormconfig-db2';
 import { ApartmentModule } from './infraestructure/db/apartment/apartment.module';
 import { TariffModule } from './infraestructure/db/tariff/tariff.module';
 import { ApartmentMetadataModule } from './infraestructure/db/apartmentMetadata/apartmentMetadata.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(db1Config),
-    TypeOrmModule.forRoot(db2Config),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    TypeOrmModule.forRoot(db1Config()),
+    TypeOrmModule.forRoot(db2Config()),
     ApartmentModule,
     TariffModule,
     ApartmentMetadataModule,

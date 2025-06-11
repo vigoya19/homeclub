@@ -1,98 +1,456 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Apartment API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+API REST para la gestión de apartamentos que permite crear, actualizar y buscar apartamentos con funcionalidades de geolocalización y filtrado avanzado.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Características
 
-## Description
+- ✅ Crear apartamentos con información detallada
+- ✅ Actualizar información de apartamentos existentes
+- ✅ Búsqueda avanzada con filtros geográficos y de precio
+- ✅ Soporte para geolocalización (latitud y longitud)
+- ✅ Filtrado por tipo de apartamento
+- ✅ Paginación de resultados
+- ✅ Estados de apartamento (activo/inactivo)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Endpoints
 
-## Project setup
+### 1. Crear Apartamento
 
-```bash
-$ npm install
+Crea un nuevo apartamento en el sistema.
+
+**Endpoint:** `POST /apartments`
+
+**Headers:**
+```
+Content-Type: application/json
 ```
 
-## Compile and run the project
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+**Body:**
+```json
+{
+  "name": "Apartamento Playa3",
+  "direction": "Calle 123 #45-68",
+  "type": "corporativo",
+  "city": "Cartagena",
+  "country": "Colombia",
+  "latitude": 10.391048,
+  "longitude": -75.479427,
+  "state": "active"
+}
 ```
 
-## Run tests
-
+**Ejemplo cURL:**
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+curl --location --request GET 'http://localhost:3000/apartments/search?latitude=40.410674&longitude=-3.654633&type=corporativo&type=turistico&minPrice=50&maxPrice=4500&page=1&pageSize=10' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'latitude=40.410674' \
+--data-urlencode 'longitude=-3.654633' \
+--data-urlencode 'type=corporativo' \
+--data-urlencode 'type=turistico' \
+--data-urlencode 'minPrice=50' \
+--data-urlencode 'maxPrice=4500' \
+--data-urlencode 'page=1' \
+--data-urlencode 'pageSize=10'
 ```
 
-## Deployment
+### 2. Actualizar Apartamento
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+Actualiza la información de un apartamento existente.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+**Endpoint:** `PUT /apartments/:id`
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+**Headers:**
+```
+Content-Type: application/json
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+**Body:**
+```json
+{
+  "name": "Torrenazas renovado",
+  "city": "ALICANTE Centro",
+  "state": "inactive"
+}
+```
 
-## Resources
+**Ejemplo cURL:**
+```bash
+curl --location --request PUT 'http://localhost:3000/apartments/2' \
+--header 'Content-Type: application/json' \
+--data '{
+  "name": "Torrenazas renovado",
+  "city": "ALICANTE Centro",
+  "state": "inactive"
+}'
+```
 
-Check out a few resources that may come in handy when working with NestJS:
+### 3. Buscar Apartamentos
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+Busca apartamentos con filtros avanzados incluyendo geolocalización, tipo, precio y paginación.
 
-## Support
+**Endpoint:** `GET /apartments/search`
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**Parámetros de consulta:**
+- `latitude` (float): Latitud para búsqueda geográfica
+- `longitude` (float): Longitud para búsqueda geográfica
+- `type` (string): Tipo de apartamento (puede ser múltiple)
+- `minPrice` (number): Precio mínimo
+- `maxPrice` (number): Precio máximo
+- `page` (number): Número de página para paginación
+- `pageSize` (number): Cantidad de resultados por página
 
-## Stay in touch
+**Ejemplo cURL:**
+```bash
+curl --location --request GET 'http://localhost:3000/apartments/search?latitude=40.410674&longitude=-3.654633&type=corporativo&type=turistico&minPrice=50&maxPrice=4500&page=1&pageSize=10' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode 'latitude=40.410674' \
+--data-urlencode 'longitude=-3.654633' \
+--data-urlencode 'type=corporativo' \
+--data-urlencode 'type=turistico' \
+--data-urlencode 'minPrice=50' \
+--data-urlencode 'maxPrice=4500' \
+--data-urlencode 'page=1' \
+--data-urlencode 'pageSize=10'
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Modelo de Datos
 
-## License
+### Apartamento
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+```json
+{
+  "id": "number",
+  "name": "string",
+  "direction": "string",
+  "type": "string",
+  "city": "string",
+  "country": "string",
+  "latitude": "number",
+  "longitude": "number",
+  "state": "string"
+}
+```
+
+### Campos
+
+| Campo | Tipo | Descripción | Requerido |
+|-------|------|-------------|-----------|
+| `name` | string | Nombre del apartamento | ✅ |
+| `direction` | string | Dirección completa | ✅ |
+| `type` | string | Tipo de apartamento (corporativo, turístico, etc.) | ✅ |
+| `city` | string | Ciudad donde se ubica | ✅ |
+| `country` | string | País donde se ubica | ✅ |
+| `latitude` | number | Coordenada de latitud | ✅ |
+| `longitude` | number | Coordenada de longitud | ✅ |
+| `state` | string | Estado del apartamento (active/inactive) | ✅ |
+
+## Tipos de Apartamento
+
+- `corporativo`: Apartamentos para uso empresarial
+- `turistico`: Apartamentos para turismo
+- Otros tipos según necesidades del negocio
+
+## Estados
+
+- `active`: Apartamento disponible
+- `inactive`: Apartamento no disponible
+
+## Instalación y Uso
+
+### Prerrequisitos
+
+- Node.js (versión recomendada)
+- Base de datos configurada
+- Puerto 3000 disponible
+
+### Instalación
+
+```bash
+# Clonar el repositorio
+git clone https://github.com/vigoya19/homeclub.git
+
+# Instalar dependencias
+npm install
+
+# Configurar variables de entorno
+cp .env.example .env
+
+# Iniciar el servidor
+npm run start:dev                                             
+```
+
+### Variables de Entorno
+
+```env
+PORT=3000
+DATABASE_URL=your_database_url
+NODE_ENV=development
+```
+
+
+### Búsqueda Exitosa
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "name": "Apartamento Playa3",
+      "direction": "Calle 123 #45-68",
+      "type": "corporativo",
+      "city": "Cartagena",
+      "country": "Colombia",
+      "latitude": 10.391048,
+      "longitude": -75.479427,
+      "state": "active"
+    }
+  ],
+  "pagination": {
+    "page": 1,
+    "pageSize": 10,
+    "total": 1,
+    "totalPages": 1
+  }
+}
+
+
+
+# Tariff API
+
+API REST para la gestión de tarifas de apartamentos que permite crear tarifas con períodos de tiempo y unidades de facturación específicas.
+
+## Características
+
+- ✅ Crear tarifas para apartamentos específicos
+- ✅ Gestión de períodos de tiempo (fecha inicio y fin)
+- ✅ Soporte para diferentes unidades de facturación
+- ✅ Asociación directa con apartamentos por ID
+
+## Endpoints
+
+### 1. Crear Tarifa
+
+Crea una nueva tarifa para un apartamento específico.
+
+**Endpoint:** `POST /tariffs`
+
+**Headers:**
+```
+Content-Type: application/json
+```
+
+**Body:**
+```json
+{
+  "apartmentId": 5,
+  "dateStart": "2026-01-01",
+  "dateEnd": "2026-02-31",
+  "amount": 4000,
+  "unit": "mensual"
+}
+```
+
+**Ejemplo cURL:**
+```bash
+curl --location 'http://localhost:3000/tariffs' \
+--header 'Content-Type: application/json' \
+--data '{
+  "apartmentId": 5,
+  "dateStart": "2026-01-01",
+  "dateEnd": "2026-02-31",
+  "amount": 4000,
+  "unit": "mensual"
+}'
+```
+
+## Modelo de Datos
+
+### Tarifa
+
+```json
+{
+  "apartmentId": "number",
+  "dateStart": "string",
+  "dateEnd": "string",
+  "amount": "number",
+  "unit": "string"
+}
+```
+
+### Campos
+
+| Campo | Tipo | Descripción | Requerido |
+|-------|------|-------------|-----------|
+| `apartmentId` | number | ID del apartamento asociado | ✅ |
+| `dateStart` | string | Fecha de inicio de la tarifa (YYYY-MM-DD) | ✅ |
+| `dateEnd` | string | Fecha de fin de la tarifa (YYYY-MM-DD) | ✅ |
+| `amount` | number | Monto de la tarifa | ✅ |
+| `unit` | string | Unidad de facturación | ✅ |
+
+## Unidades de Facturación
+
+- `mensual`: Tarifa por mes
+- `diario`: Tarifa por día
+- `semanal`: Tarifa por semana
+- `anual`: Tarifa por año
+
+## Instalación y Uso
+
+### Prerrequisitos
+
+- Node.js (versión recomendada)
+- Base de datos configurada
+- Puerto 3000 disponible
+
+### Instalación
+
+```bash
+# Clonar el repositorio
+git clone [URL_DEL_REPOSITORIO]
+
+# Instalar dependencias
+npm install
+
+# Configurar variables de entorno
+cp .env.example .env
+
+# Iniciar el servidor
+npm start
+```
+
+### Variables de Entorno
+
+```env
+PORT=3000
+DATABASE_URL=your_database_url
+NODE_ENV=development
+```
+
+## Ejemplos de Respuesta
+
+### Creación Exitosa
+```json
+{
+  "success": true,
+  "data": {
+    "id": 1,
+    "apartmentId": 5,
+    "dateStart": "2026-01-01",
+    "dateEnd": "2026-02-31",
+    "amount": 4000,
+    "unit": "mensual"
+  },
+  "message": "Tarifa creada exitosamente"
+}
+```
+
+
+
+# Apartment Metadata API
+
+API REST para la gestión de metadatos de apartamentos que permite crear y actualizar información adicional como descripciones e imágenes de los apartamentos.
+
+## Características
+
+- ✅ Crear metadatos para apartamentos con código único
+- ✅ Actualizar información de metadatos existentes
+- ✅ Gestión de descripciones detalladas
+- ✅ Soporte para URLs de imágenes
+- ✅ Identificación por código único
+
+## Endpoints
+
+### 1. Crear Metadatos de Apartamento
+
+Crea nuevos metadatos para un apartamento específico.
+
+**Endpoint:** `POST /apartment-metadata`
+
+**Headers:**
+```
+Content-Type: application/json
+```
+
+**Body:**
+```json
+{
+  "code": 10,
+  "description": "Hermoso apartamento con vista al mar 2",
+  "imageUrl": "https://ejemplo.com/imagen1.jpg"
+}
+```
+
+**Ejemplo cURL:**
+```bash
+curl --location 'http://localhost:3000/apartment-metadata' \
+--header 'Content-Type: application/json' \
+--data '{
+  "code": 10,
+  "description": "Hermoso apartamento con vista al mar 2",
+  "imageUrl": "https://ejemplo.com/imagen1.jpg"
+}'
+```
+
+### 2. Actualizar Metadatos de Apartamento
+
+Actualiza la información de metadatos existentes.
+
+**Endpoint:** `PUT /apartment-metadata/:id`
+
+**Headers:**
+```
+Content-Type: application/json
+```
+
+**Body:**
+```json
+{
+  "description": "Apartamento remodelado, vista increíble 2",
+  "imageUrl": "https://ejemplo.com/nueva-imagen.jpg"
+}
+```
+
+**Ejemplo cURL:**
+```bash
+curl --location --request PUT 'http://localhost:3000/apartment-metadata/1' \
+--header 'Content-Type: application/json' \
+--data '{
+  "description": "Apartamento remodelado, vista increíble 2",
+  "imageUrl": "https://ejemplo.com/nueva-imagen.jpg"
+}'
+```
+
+## Modelo de Datos
+
+### Metadatos de Apartamento
+
+```json
+{
+  "id": "number",
+  "code": "number",
+  "description": "string",
+  "imageUrl": "string"
+}
+```
+
+### Campos
+
+| Campo | Tipo | Descripción | Requerido |
+|-------|------|-------------|-----------|
+| `code` | number | Código único del apartamento | ✅ |
+| `description` | string | Descripción detallada del apartamento | ✅ |
+| `imageUrl` | string | URL de la imagen principal del apartamento | ✅ |
+
+## Validaciones
+
+### Código
+- El `code` debe ser un número único
+- No se permiten códigos duplicados
+
+### Descripción
+- La `description` debe ser una cadena de texto
+- Se recomienda una descripción detallada y atractiva
+
+### URL de Imagen
+- La `imageUrl` debe ser una URL válida
+- Se recomienda us
